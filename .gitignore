@@ -21,3 +21,9 @@ $RECYCLE.BIN/
 # =========================
 # Operating System Files
 # =========================
+
+.git*
+.*
+META-INF
+out/*
+*.iml

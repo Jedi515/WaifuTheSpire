@@ -1,0 +1,13 @@
+
+FungiBeast.png
+size: 196,281
+format: RGBA8888
+filter: Linear,Linear
+repeat: none
+Fungi_beast_s
+  rotate: false
+  xy: 1, 1
+  size: 196, 281
+  orig: 241, 289
+  offset: 2, 2
+  index: -1
