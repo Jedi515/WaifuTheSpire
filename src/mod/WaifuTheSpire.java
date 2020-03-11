@@ -24,10 +24,15 @@ public class WaifuTheSpire
         BaseMod.subscribe(new WaifuTheSpire());
     }
 
+    public static void instantWaifu(AbstractMonster waifuTarget, String imagePath)
+    {
+        ReflectionHacks.setPrivate(waifuTarget, AbstractCreature.class, "atlas", null);
+        ReflectionHacks.setPrivate(waifuTarget, AbstractMonster.class, "img", TextureLoader.getTexture(imagePath));
+    }
+
     public static void waifufy(AbstractMonster waifuTarget, String imagePath, int imageWidth, int imageHeight)
     {
         try {
-            waifuTarget.hb_x = waifuTarget.hb_y = 0;
             ReflectionHacks.setPrivate(waifuTarget, AbstractCreature.class, "atlas", null);
             ReflectionHacks.setPrivate(waifuTarget, AbstractMonster.class, "img", TextureLoader.getTexture(imagePath));
             float hb_w = imageWidth * Settings.scale;
@@ -48,14 +53,28 @@ public class WaifuTheSpire
         }
     }
 
-    public static void waifufy(AbstractMonster waifuTarget, String atlasPath, String jsonPath, int imageWidth, int imageHeight)
+    public static void instantWaifu(AbstractMonster waifuTarget, String atlasPath, String jsonPath, float scale)
+    {
+        Method loadAnimationMethod = null;
+        try {
+            loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation",String.class, String.class, float.class);
+            loadAnimationMethod.setAccessible(true);
+            loadAnimationMethod.invoke(waifuTarget,atlasPath, jsonPath, scale);
+            AnimationState.TrackEntry e = waifuTarget.state.setAnimation(0, "idle", true);
+            e.setTime(e.getEndTime() * MathUtils.random());
+            e.setTimeScale(MathUtils.random(0.7F, 1.0F));
+        } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
+            e.printStackTrace();
+        }
+    }
+
+    public static void waifufy(AbstractMonster waifuTarget, String atlasPath, String jsonPath, int imageWidth, int imageHeight, float scale)
     {
         try {
-            waifuTarget.hb_x = waifuTarget.hb_y = 0;
             Method loadAnimationMethod = AbstractCreature.class.getDeclaredMethod("loadAnimation",String.class, String.class, float.class);
             loadAnimationMethod.setAccessible(true);
-            loadAnimationMethod.invoke(waifuTarget,atlasPath, jsonPath, 1.0F);
-            AnimationState.TrackEntry e = waifuTarget.state.setAnimation(0, "Idle", true);
+            loadAnimationMethod.invoke(waifuTarget,atlasPath, jsonPath, scale);
+            AnimationState.TrackEntry e = waifuTarget.state.setAnimation(0, "idle", true);
             e.setTime(e.getEndTime() * MathUtils.random());
             e.setTimeScale(MathUtils.random(0.7F, 1.0F));
             float hb_w = imageWidth * Settings.scale;
@@ -74,5 +93,12 @@ public class WaifuTheSpire
         } catch (NoSuchMethodException | IllegalAccessException | InvocationTargetException e) {
             e.printStackTrace();
         }
+    }
+
+    public static void ResetHitboxOffset(AbstractMonster waifuTarget, boolean resetX, boolean resetY)
+    {
+        if (resetX) waifuTarget.hb_x = 0;
+        if (resetY) waifuTarget.hb_y = 0;
+
     }
 }

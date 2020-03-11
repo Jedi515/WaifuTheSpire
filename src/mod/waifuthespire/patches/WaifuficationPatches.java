@@ -2,12 +2,15 @@ package mod.waifuthespire.patches;
 
 import basemod.ReflectionHacks;
 import com.evacipated.cardcrawl.modthespire.lib.SpirePatch;
-import com.megacrit.cardcrawl.core.Settings;
+import com.megacrit.cardcrawl.actions.animations.TalkAction;
 import com.megacrit.cardcrawl.monsters.AbstractMonster;
 import com.megacrit.cardcrawl.monsters.exordium.*;
+import javassist.CannotCompileException;
+import javassist.expr.ExprEditor;
+import javassist.expr.NewExpr;
 import mod.waifuthespire.util.TextureLoader;
 
-import static mod.WaifuTheSpire.waifufy;
+import static mod.WaifuTheSpire.*;
 
 public class WaifuficationPatches
 {
@@ -16,7 +19,7 @@ public class WaifuficationPatches
     {
         public static void Postfix(FungiBeast __instance, float x, float y)
         {
-            waifufy(__instance, "resources/monsters/FungiBeast/FungiBeast.png", 196, 281);
+            waifufy(__instance, "resources/monsters/FungiBeast/FungiBeast.png", 240, 300);
         }
     }
 
@@ -37,7 +40,7 @@ public class WaifuficationPatches
     {
         public static void Postfix(LouseDefensive __instance, float x, float y)
         {
-            waifufy(__instance, "resources/monsters/LouseDefensive/Louse_Chan.png", 122, 324);
+            waifufy(__instance, "resources/monsters/LouseDefensive/Louse_Chan.png", 165, 345);
         }
     }
 
@@ -46,7 +49,7 @@ public class WaifuficationPatches
     {
         public static void Postfix(LouseNormal __instance, float x, float y)
         {
-            waifufy(__instance, "resources/monsters/LouseNormal/Louse_Chan.png", 122, 324);
+            waifufy(__instance, "resources/monsters/LouseNormal/Louse_Chan.png", 165, 345);
         }
     }
 
@@ -55,7 +58,7 @@ public class WaifuficationPatches
     {
         public static void Postfix(AcidSlime_S __instance, float x, float y, int poisonAmount)
         {
-            waifufy(__instance, "resources/monsters/Slimes/Acid_S.png", 114, 140);
+            waifufy(__instance, "resources/monsters/Slimes/Acid_S.png", 155, 160);
         }
     }
 
@@ -64,7 +67,8 @@ public class WaifuficationPatches
     {
         public static void Postfix(SpikeSlime_S __instance, float x, float y, int poisonAmount)
         {
-            waifufy(__instance, "resources/monsters/Slimes/Spike_S.png", 150, 140);
+            ResetHitboxOffset(__instance, true,false);
+            waifufy(__instance, "resources/monsters/Slimes/Spike_S.png", 190, 160);
         }
     }
 
@@ -73,7 +77,7 @@ public class WaifuficationPatches
     {
         public static void Postfix(AcidSlime_M __instance, float x, float y, int poisonAmount)
         {
-            waifufy(__instance, "resources/monsters/Slimes/Acid_M.png", 180, 225);
+            waifufy(__instance, "resources/monsters/Slimes/Acid_M.png", 220, 245);
         }
     }
 
@@ -82,7 +86,8 @@ public class WaifuficationPatches
     {
         public static void Postfix(SpikeSlime_M __instance, float x, float y, int poisonAmount)
         {
-            waifufy(__instance, "resources/monsters/Slimes/Spike_M.png", 240, 225);
+            ResetHitboxOffset(__instance, true,false);
+            waifufy(__instance, "resources/monsters/Slimes/Spike_M.png", 280, 245);
         }
     }
 
@@ -91,7 +96,7 @@ public class WaifuficationPatches
     {
         public static void Postfix(AcidSlime_L __instance, float x, float y, int poisonAmount)
         {
-            waifufy(__instance, "resources/monsters/Slimes/Acid_L.png", 305, 295);
+            waifufy(__instance, "resources/monsters/Slimes/Acid_L.png", 345, 315);
         }
     }
 
@@ -100,7 +105,90 @@ public class WaifuficationPatches
     {
         public static void Postfix(SpikeSlime_L __instance, float x, float y, int poisonAmount)
         {
-            waifufy(__instance, "resources/monsters/Slimes/Spike_L.png", 285, 275);
+            ResetHitboxOffset(__instance, true,false);
+            waifufy(__instance, "resources/monsters/Slimes/Spike_L.png", 250, 295);
+        }
+    }
+
+    //GREMLIN GANG
+    @SpirePatch(clz = GremlinWizard.class, method = "takeTurn")
+    public static class Explosion
+    {
+        public static String explosion = "Explosion!";
+        public static ExprEditor Instrument()
+        {
+            return new ExprEditor()
+            {
+                public void edit(NewExpr newExpr)
+                {
+                    if (newExpr.getClassName().equals(TalkAction.class.getName()))
+                    {
+                        System.out.println("JEDI MOD: PATCHED INTO GREMBO WIZ");
+                        try {
+                            newExpr.replace("{$2 = \"" + Explosion.explosion + "\";  $_ = $proceed($$);}");
+                        } catch (CannotCompileException e) {
+                            e.printStackTrace();
+                        }
+                    }
+                }
+            };
+        }
+    }
+
+    @SpirePatch(clz = GremlinWizard.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GremlinWizardPatch
+    {
+        public static void Postfix(GremlinWizard __instance, float x, float y)
+        {
+            waifufy(__instance, "resources/monsters/Gremlins/GremlinWizard.png", 120, 180);
+        }
+    }
+
+    @SpirePatch(clz = GremlinFat.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GremlinFatPatch
+    {
+        public static void Postfix(GremlinFat __instance, float x, float y)
+        {
+            waifufy(__instance, "resources/monsters/Gremlins/GremlinFat.png", 120, 300);
+        }
+    }
+
+    @SpirePatch(clz = GremlinWarrior.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GremlinAngryPatch
+    {
+        public static void Postfix(GremlinWarrior __instance, float x, float y)
+        {
+            ResetHitboxOffset(__instance, false, true);
+            __instance.hb_x -= 4;
+            waifufy(__instance, "resources/monsters/Gremlins/GremlinAngry.png", 130, 220);
+        }
+    }
+
+    @SpirePatch(clz = GremlinThief.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GremlinSneakyPatch
+    {
+        public static void Postfix(GremlinThief __instance, float x, float y)
+        {
+            waifufy(__instance, "resources/monsters/Gremlins/GremlinSneaky.png", 140, 170);
+        }
+    }
+
+    @SpirePatch(clz = GremlinTsundere.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GremlinTsunderePatch
+    {
+        public static void Postfix(GremlinTsundere __instance, float x, float y)
+        {
+            waifufy(__instance, "resources/monsters/Gremlins/GremlinTsundere.png", 130, 170);
+        }
+    }
+
+    @SpirePatch(clz = TheGuardian.class, method = SpirePatch.CONSTRUCTOR)
+    public static class GuardianPatch
+    {
+        public static void Postfix(TheGuardian __instance)
+        {
+            instantWaifu(__instance, "resources/monsters/Guardian/Guardian.atlas", "resources/monsters/Guardian/Guardian.json", 2.0F);
+            System.out.println("JEDI MOD: SUCCESSFUL WAIFU GUARDIAN");
         }
     }
 }

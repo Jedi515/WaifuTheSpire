@@ -4,7 +4,7 @@
   "author_list": ["Jedi#3970", "Blizzarre", "GrubGrub"],
   "description": "Ya'll sick weirdos and so am I.",
   "credits": "",
-  "version": "0.1.0",
+  "version": "0.2.0",
   "sts_version": "01-27-2020",
   "mts_version": "3.6.0",
   "dependencies": ["basemod"],
